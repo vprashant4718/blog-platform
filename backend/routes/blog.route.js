@@ -5,6 +5,6 @@ import { verifyToken, checkRole } from '../middleware/auth.middleware.js';
 const router = express.Router();
 
 // Only 'Editor', 'Author', and 'Super Admin' can create blogs [cite: 35, 36]
-router.post('/create', verifyToken, checkRole(['Editor', 'Author', 'Super Admin']), createBlog);
+router.post('/create', verifyToken, checkRole(['editor', 'author', 'superAdmin']), createBlog);
 
 export default router;
