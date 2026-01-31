@@ -49,11 +49,23 @@ export const login = async (req, res) => {
     });
 
     res.status(200).json({
+      user,
       message: "Login successful",
-      role: user.role
     });
 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+
+
+export const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: "none"
+  });
+
+  res.status(200).json({ message: "Logged out" });
 };

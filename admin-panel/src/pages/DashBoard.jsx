@@ -1,0 +1,92 @@
+import { useSelector } from "react-redux";
+import { FileText, Users, Eye, Clock } from "lucide-react";
+
+const Dashboard = () => {
+  const user = useSelector((state) => state.auth.user);
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Dashboard
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Welcome back{user ? `, ${user.name}` : ""}. Manage your blogs and content here.
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <StatCard
+            title="Total Blogs"
+            value="12"
+            icon={<FileText size={22} />}
+          />
+
+          <StatCard
+            title="Published Blogs"
+            value="8"
+            icon={<Eye size={22} />}
+          />
+
+          <StatCard
+            title="Drafts"
+            value="4"
+            icon={<Clock size={22} />}
+          />
+
+          <StatCard
+            title="Total Views"
+            value="1,245"
+            icon={<Users size={22} />}
+          />
+        </div>
+
+        {/* Recent Activity */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Recent Activity
+          </h2>
+
+          <ul className="space-y-3 text-sm text-gray-700">
+            <li className="flex justify-between">
+              <span>New blog created: “How AI Is Changing Blogging”</span>
+              <span className="text-gray-400">2 hours ago</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Blog published: “SEO Tips for 2026”</span>
+              <span className="text-gray-400">Yesterday</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Draft updated: “Next.js Performance Guide”</span>
+              <span className="text-gray-400">2 days ago</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
+
+/* ---------- Reusable Card ---------- */
+
+const StatCard = ({ title, value, icon }) => {
+  return (
+    <div className="bg-white rounded-xl shadow-sm p-6 flex items-center gap-4">
+      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-900 text-white">
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm text-gray-500">{title}</p>
+        <p className="text-xl font-semibold text-gray-900">{value}</p>
+      </div>
+    </div>
+  );
+};

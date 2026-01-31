@@ -2,17 +2,25 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, LogIn } from "lucide-react";
 import API from "../utils/api";
+import { loginUser } from "../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      await API.post("/auth/login", { email, password });
+      const {data} = await API.post("/auth/login", { email, password });
+      console.log(data)
+      dispatch(loginUser({
+      user: data.user,
+      role: data.user.role
+    }));
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -20,8 +28,8 @@ const Login = () => {
   };
 
   return (
-    // <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full  bg-white rounded-xl shadow-lg p-8">
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
         
         {/* Header */}
         <div className="text-center mb-8">
@@ -41,7 +49,7 @@ const Login = () => {
           
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-left text-sm font-medium text-gray-700 mb-1">
               Email
             </label>
             <div className="relative">
@@ -58,7 +66,7 @@ const Login = () => {
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-left text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
             <div className="relative">
@@ -88,7 +96,7 @@ const Login = () => {
           © {new Date().getFullYear()} Admin Panel. All rights reserved.
         </p>
       </div>
-    // </div>
+    </div>
   );
 };
 

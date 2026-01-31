@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-// Verify Token [cite: 33]
+// Verify Token 
 export const verifyToken = (req, res, next) => {
     const token = req.cookies?.token;
     console.log("token", token)
@@ -15,7 +15,7 @@ export const verifyToken = (req, res, next) => {
     }
 };
 
-// Role Check [cite: 40]
+// Role Check
 export const checkRole = (roles) => (req, res, next) => {
     if (!roles.includes(req.user.role)) {
         return res.status(403).json({ message: 'Access Forbidden' });
