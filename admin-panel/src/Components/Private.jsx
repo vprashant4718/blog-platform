@@ -9,8 +9,9 @@ const Private = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await API.get("/auth//isUserLogin");
+        await API.get("/auth/isUserLogin");
         setIsAuth(true);
+        setLoading(false);
       } catch (error) {
           setLoading(false);
         setIsAuth(false);
