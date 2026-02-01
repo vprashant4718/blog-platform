@@ -5,6 +5,7 @@ import Private from './Components/Private';
 import CreateBlog from './pages/CreateBlog';
 import Navbar from './Components/Navbar'
 import Dashboard from './pages/DashBoard';
+import { ToastContainer } from 'react-toastify';
 
 const App=()=> {
 
@@ -24,6 +25,7 @@ const App=()=> {
     </Routes>
     {/* <ToastContainer theme='dark' position="top-right" autoClose={3000} draggable className='mt-16'/> */}
      {/* <Footer />  */}
+     <ToastContainer position="top-right" className={'mt-20'} autoClose={3000} />
     </BrowserRouter>
   )
 }

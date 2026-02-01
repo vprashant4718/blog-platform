@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import ViewTracker from "./ViewTracker";
 
 // Fetch single blog
 async function getBlog(slug) {
@@ -11,19 +12,12 @@ async function getBlog(slug) {
   return res.json();
 }
 
-/* =========================
-   SEO METADATA
-========================= */
+// SEO metadata
 export async function generateMetadata({ params }) {
-  const { slug } = await params; // ✅ IMPORTANT FIX
+  const { slug } = await params;
 
   const blog = await getBlog(slug);
-
-  if (!blog) {
-    return {
-      title: "Blog Not Found",
-    };
-  }
+  if (!blog) return { title: "Blog Not Found" };
 
   return {
     title: blog.metaTitle || blog.title,
@@ -31,7 +25,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: blog.metaTitle || blog.title,
       description: blog.metaDescription,
-      images: [blog.featureImage || "/default-image.png"],
+      images: [blog.featureImage],
       type: "article",
     },
     alternates: {
@@ -40,17 +34,13 @@ export async function generateMetadata({ params }) {
   };
 }
 
-/* =========================
-   PAGE UI
-========================= */
 export default async function BlogPage({ params }) {
-  const { slug } = await params; // ✅ IMPORTANT FIX
+  const { slug } = await params;
 
   const blog = await getBlog(slug);
-  console.log(blog);
   if (!blog) return notFound();
 
-  const jsonLd = {
+  const seoSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: blog.title,
@@ -64,10 +54,13 @@ export default async function BlogPage({ params }) {
 
   return (
     <article className="max-w-3xl mx-auto px-6 py-12">
+      {/* View counter (client-only) */}
+      <ViewTracker slug={blog.slug} />
+
       {/* JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(seoSchema) }}
       />
 
       <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>

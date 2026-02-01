@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { FileText, Image as ImageIcon, Save, X, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 import API from "../utils/api";
-import Editor from "../Components/Editor_Blog"; 
-// Import the separated utility function
-import { uploadToCloudinary } from "../Components/UploadToCloudinary"; 
+import Editor from "../Components/Editor_Blog";
+import { uploadToCloudinary } from "../Components/UploadToCloudinary";
+import { useNavigate } from "react-router-dom";
 
 const CreateBlog = () => {
-  const [loading, setLoading] = useState(false); // For form submission
-  const [imageUploading, setImageUploading] = useState(false); // For image upload only
-
   const navigate = useNavigate();
-  
+
+  const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -18,28 +19,38 @@ const CreateBlog = () => {
     metaDescription: "",
     featureImage: "",
     category: "",
-    tags: ""
+    tags: "",
   });
 
-  const { title, content, metaTitle, metaDescription, featureImage, category, tags } = formData;
+  const {
+    title,
+    content,
+    metaTitle,
+    metaDescription,
+    featureImage,
+    category,
+    tags,
+  } = formData;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Image Upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setImageUploading(true);
-    
+    toast.info("Uploading image...");
+
     try {
       const imageUrl = await uploadToCloudinary(file);
-      if (imageUrl) {
-        setFormData({ ...formData, featureImage: imageUrl });
-      }
+      setFormData({ ...formData, featureImage: imageUrl });
+      toast.success("Image uploaded successfully");
     } catch (error) {
-      alert("Image upload failed. Check console.");
+      console.error(error);
+      toast.error("Image upload failed");
     } finally {
       setImageUploading(false);
     }
@@ -47,10 +58,26 @@ const CreateBlog = () => {
 
   const handleRemoveImage = () => {
     setFormData({ ...formData, featureImage: "" });
+    toast.info("Image removed");
   };
 
+  // Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 🔴 Validation
+    if (!title.trim())
+      return toast.warning("Blog title is required");
+
+    if (!content || content.trim().length < 20)
+      return toast.warning("Blog content is too short");
+
+    if (!featureImage)
+      return toast.warning("Feature image is required");
+
+    if (!metaTitle.trim() || !metaDescription.trim())
+      return toast.warning("SEO fields are required");
+
     setLoading(true);
 
     try {
@@ -61,12 +88,16 @@ const CreateBlog = () => {
         metaDescription,
         featureImage,
         categories: [category],
-        tags: tags.split(",").map(t => t.trim())
+        tags: tags.split(",").map((t) => t.trim()),
       });
 
-      alert("Blog created successfully");
+      toast.success("Blog published successfully");
+      navigate("/dashboard");
     } catch (err) {
-      alert("Failed to create blog");
+      console.error(err);
+      toast.error(
+        err.response?.data?.message || "Failed to create blog"
+      );
     } finally {
       setLoading(false);
     }
@@ -75,67 +106,66 @@ const CreateBlog = () => {
   return (
     <div className="min-h-screen p-6 bg-gray-50">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">Create New Blog</h1>
+        <h1 className="text-2xl font-bold mb-6 text-gray-800">
+          Create New Blog
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          
+
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Blog Title</label>
+            <label className="text-sm font-medium text-gray-700 mb-1 block">
+              Blog Title
+            </label>
             <div className="relative">
               <FileText className="absolute left-3 top-3 text-gray-400" size={18} />
               <input
                 name="title"
                 value={title}
                 onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg"
                 placeholder="Enter blog title"
-                required
               />
             </div>
           </div>
 
-          {/* Feature Image Upload (The Fixed Part) */}
+          {/* Feature Image */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Feature Image</label>
-            
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Feature Image
+            </label>
+
             {!featureImage ? (
-              // Upload Area
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition relative">
-                
+              <div className="border-2 border-dashed rounded-lg p-6 text-center relative">
                 {imageUploading ? (
-                   <div className="flex flex-col items-center text-blue-600">
-                      <Loader2 className="animate-spin mb-2" size={32} />
-                      <span className="text-sm font-medium">Uploading to Cloudinary...</span>
-                   </div>
+                  <div className="flex flex-col items-center text-blue-600">
+                    <Loader2 className="animate-spin mb-2" size={32} />
+                    Uploading...
+                  </div>
                 ) : (
                   <>
-                    <ImageIcon className="text-gray-400 mb-2" size={40} />
-                    <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
-                    <p className="text-xs text-gray-400 mt-1">SVG, PNG, JPG or GIF</p>
-                    
-                    {/* The Hidden Input */}
-                    <input 
-                      type="file" 
+                    <ImageIcon className="mx-auto mb-2 text-gray-400" size={40} />
+                    <p className="text-sm text-gray-500">Click to upload image</p>
+                    <input
+                      type="file"
                       accept="image/*"
-                      onChange={handleImageUpload} 
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      onChange={handleImageUpload}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
                     />
                   </>
                 )}
               </div>
             ) : (
-              // Image Preview Area
-              <div className="relative rounded-lg overflow-hidden border border-gray-200">
-                <img 
-                  src={featureImage} 
-                  alt="Feature Preview" 
-                  className="w-full h-64 object-cover" 
+              <div className="relative">
+                <img
+                  src={featureImage}
+                  alt="Preview"
+                  className="w-full h-64 object-cover rounded-lg"
                 />
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition shadow-md"
+                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
                 >
                   <X size={16} />
                 </button>
@@ -143,70 +173,61 @@ const CreateBlog = () => {
             )}
           </div>
 
-          {/* Content Editor */}
+          {/* Content */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-            <div className="prose-editor border rounded-lg overflow-hidden min-h-[300px]">
-                {/* Assuming your Editor handles its own height/styling */}
-                <Editor
-                  value={content}
-                  onChange={(val) => setFormData({ ...formData, content: val })}
-                />
-            </div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Blog Content
+            </label>
+            <Editor
+              value={content}
+              onChange={(val) =>
+                setFormData({ ...formData, content: val })
+              }
+            />
           </div>
 
           {/* Category & Tags */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <input
-                    name="category"
-                    value={category}
-                    onChange={handleChange}
-                    placeholder="e.g. Technology"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-            </div>
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-                <input
-                    name="tags"
-                    value={tags}
-                    onChange={handleChange}
-                    placeholder="React, JavaScript, Web (comma separated)"
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-            </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <input
+              name="category"
+              value={category}
+              onChange={handleChange}
+              placeholder="Category"
+              className="p-2 border rounded-lg"
+            />
+            <input
+              name="tags"
+              value={tags}
+              onChange={handleChange}
+              placeholder="Tags (comma separated)"
+              className="p-2 border rounded-lg"
+            />
           </div>
 
-          {/* SEO Section */}
-          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-4">
-             <h3 className="font-semibold text-gray-700">SEO Settings</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  name="metaTitle"
-                  value={metaTitle}
-                  onChange={handleChange}
-                  placeholder="Meta Title"
-                  className="w-full p-2 border border-gray-300 rounded-lg"
-                />
-                <textarea
-                  name="metaDescription"
-                  value={metaDescription}
-                  onChange={handleChange}
-                  placeholder="Meta Description"
-                  rows={2}
-                  className="w-full p-2 border border-gray-300 rounded-lg resize-none"
-                />
-             </div>
+          {/* SEO */}
+          <div className="bg-gray-50 p-4 rounded-lg border space-y-3">
+            <h3 className="font-semibold">SEO Settings</h3>
+            <input
+              name="metaTitle"
+              value={metaTitle}
+              onChange={handleChange}
+              placeholder="Meta Title"
+              className="w-full p-2 border rounded-lg"
+            />
+            <textarea
+              name="metaDescription"
+              value={metaDescription}
+              onChange={handleChange}
+              placeholder="Meta Description"
+              rows={2}
+              className="w-full p-2 border rounded-lg"
+            />
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
-            type="submit"
             disabled={loading || imageUploading}
-            className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg text-white font-medium transition
-              ${loading || imageUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-900 hover:bg-gray-800'}`}
+            className="w-full flex justify-center items-center gap-2 py-3 rounded-lg text-white bg-gray-900 disabled:bg-gray-400"
           >
             {loading ? <Loader2 className="animate-spin" /> : <Save size={18} />}
             {loading ? "Publishing..." : "Publish Blog"}

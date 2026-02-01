@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LayoutDashboard, PenSquare, LogOut, BookOpen, LogIn } from "lucide-react";
+import { LayoutDashboard, PenSquare, LogOut, BookOpen, LogIn, Magnet } from "lucide-react";
 import API from "../utils/api";
 import { clearUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { Profiler } from "react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Navbar = () => {
 
         {/* Logo / Brand */}
         <div className="flex items-center gap-2 text-gray-900 font-semibold text-lg">
-          <BookOpen size={20} />
+          <Magnet size={20} />
           Blog Admin
         </div>
 

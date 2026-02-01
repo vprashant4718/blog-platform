@@ -1,8 +1,43 @@
 import { useSelector } from "react-redux";
 import { FileText, Users, Eye, Clock } from "lucide-react";
+import API from "../utils/api";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.auth.user);
+ const [blogsData, setBlogsData] = useState({
+  total: 0,
+  published: 0,
+  drafts: 0,
+  views: 0,
+});
+
+const getBlogs = async () => {
+  try {
+    const res = await API.get("/blogs/admin/getAllBlogs");
+
+    const data = res.data; 
+    console.log("Fetched blogs:", data);
+
+      const totalViews = data.reduce(
+      (sum, blog) => sum + (blog.views || 0),
+      0
+    );
+    setBlogsData({
+      total: data.length,
+      published: data.filter((blog) => blog.status === "published").length,
+      drafts: data.filter((blog) => blog.status === "draft").length,
+      views: totalViews
+    });
+
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+  }
+};
+
+useEffect(() => {
+  getBlogs();
+}, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -23,25 +58,25 @@ const Dashboard = () => {
           
           <StatCard
             title="Total Blogs"
-            value="12"
+            value= {blogsData.total}
             icon={<FileText size={22} />}
           />
 
           <StatCard
             title="Published Blogs"
-            value="8"
+            value= {blogsData.published}
             icon={<Eye size={22} />}
           />
 
           <StatCard
             title="Drafts"
-            value="4"
+            value= {blogsData.drafts}
             icon={<Clock size={22} />}
           />
 
           <StatCard
             title="Total Views"
-            value="1,245"
+            value= {blogsData.views}
             icon={<Users size={22} />}
           />
         </div>

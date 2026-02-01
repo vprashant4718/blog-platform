@@ -78,9 +78,62 @@ export const createBlog = async (req, res) => {
   }
 };
 
+// GET /api/blogs/getAllBlogs
 export const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().sort({ createdAt: -1 }); 
+    const { category, tag, author } = req.query;
+
+    const query = { status: "published" };
+
+    if (category) {
+      query.categories = category;
+    }
+
+    if (tag) {
+      query.tags = { $in: [tag] };
+    }
+
+    if (author) {
+      query.author = author;
+    }
+
+    const blogs = await Blog.find(query)
+      .populate("author", "name email")
+      .sort({ createdAt: -1 });
+
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// GET /api/blogs/admin/getAllBlogs
+export const getAllBlogsAdmin = async (req, res) => {
+  try {
+    const { category, tag, author, status } = req.query;
+
+    const query = {}; 
+
+    if (status) {
+      query.status = status; // draft | published
+    }
+
+    if (category) {
+      query.categories = category;
+    }
+
+    if (tag) {
+      query.tags = { $in: [tag] };
+    }
+
+    if (author) {
+      query.author = author;
+    }
+
+    const blogs = await Blog.find(query)
+      .populate("author", "name email")
+      .sort({ createdAt: -1 });
+
     res.json(blogs);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -98,5 +151,24 @@ export const getBlogBySlug = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+
+// controllers/blog.controller.js
+export const incrementBlogView = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    await Blog.findOneAndUpdate(
+      { slug, status: "published" },
+      { $inc: { views: 1 } }
+    );
+
+    res.status(200).json({ message: "View counted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 
 // Add logic for  updateBlog, deleteBlog here...
