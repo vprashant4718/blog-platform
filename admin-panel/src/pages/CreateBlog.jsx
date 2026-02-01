@@ -20,6 +20,9 @@ const CreateBlog = () => {
     featureImage: "",
     category: "",
     tags: "",
+    faq: [{ question: "", answer: "" }],
+    internalLinks: [{ title: "", url: "" }],
+    externalLinks: [{ title: "", url: "" }],
   });
 
   const {
@@ -30,13 +33,16 @@ const CreateBlog = () => {
     featureImage,
     category,
     tags,
+    faq,
+    internalLinks,
+    externalLinks,
   } = formData;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Image Upload
+  /* ================= IMAGE UPLOAD ================= */
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -47,9 +53,8 @@ const CreateBlog = () => {
     try {
       const imageUrl = await uploadToCloudinary(file);
       setFormData({ ...formData, featureImage: imageUrl });
-      toast.success("Image uploaded successfully");
-    } catch (error) {
-      console.error(error);
+      toast.success("Image uploaded");
+    } catch (err) {
       toast.error("Image upload failed");
     } finally {
       setImageUploading(false);
@@ -58,25 +63,56 @@ const CreateBlog = () => {
 
   const handleRemoveImage = () => {
     setFormData({ ...formData, featureImage: "" });
-    toast.info("Image removed");
   };
 
-  // Form Submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  /* ================= FAQ ================= */
+  const handleFaqChange = (i, field, value) => {
+    const updated = [...faq];
+    updated[i][field] = value;
+    setFormData({ ...formData, faq: updated });
+  };
 
-    // 🔴 Validation
-    if (!title.trim())
-      return toast.warning("Blog title is required");
+  const addFaq = () =>
+    setFormData({
+      ...formData,
+      faq: [...faq, { question: "", answer: "" }],
+    });
 
-    if (!content || content.trim().length < 20)
-      return toast.warning("Blog content is too short");
+  const removeFaq = (i) =>
+    setFormData({
+      ...formData,
+      faq: faq.filter((_, index) => index !== i),
+    });
 
-    if (!featureImage)
-      return toast.warning("Feature image is required");
+  /* ================= LINKS ================= */
+  const handleLinkChange = (type, i, field, value) => {
+    const updated = [...formData[type]];
+    updated[i][field] = value;
+    setFormData({ ...formData, [type]: updated });
+  };
 
-    if (!metaTitle.trim() || !metaDescription.trim())
-      return toast.warning("SEO fields are required");
+  const addLink = (type) =>
+    setFormData({
+      ...formData,
+      [type]: [...formData[type], { title: "", url: "" }],
+    });
+
+  const removeLink = (type, i) =>
+    setFormData({
+      ...formData,
+      [type]: formData[type].filter((_, index) => index !== i),
+    });
+
+  /* ================= SUBMIT ================= */
+  const handleSubmit = async (status) => {
+    // e.preventDefault();
+    console.log(status);
+    if (!title.trim()) return toast.warning("Title is required");
+    if (!content || content.length < 30)
+      return toast.warning("Content too short");
+    if (!featureImage) return toast.warning("Feature image required");
+    if (!metaTitle || !metaDescription)
+      return toast.warning("SEO fields required");
 
     setLoading(true);
 
@@ -87,17 +123,18 @@ const CreateBlog = () => {
         metaTitle,
         metaDescription,
         featureImage,
-        categories: [category],
+        categories: category.split(",").map((c) => c.trim()),
         tags: tags.split(",").map((t) => t.trim()),
+        faq: faq.filter((f) => f.question && f.answer),
+        internalLinks: internalLinks.filter((l) => l.title && l.url),
+        externalLinks: externalLinks.filter((l) => l.title && l.url),
+        status
       });
 
       toast.success("Blog published successfully");
       navigate("/dashboard");
     } catch (err) {
-      console.error(err);
-      toast.error(
-        err.response?.data?.message || "Failed to create blog"
-      );
+      toast.error(err.response?.data?.message || "Failed to create blog");
     } finally {
       setLoading(false);
     }
@@ -105,135 +142,192 @@ const CreateBlog = () => {
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800">
-          Create New Blog
-        </h1>
+      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <h1 className="text-2xl font-bold mb-6">Create Blog</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form  className="space-y-6">
+          {/* TITLE */}
+          <input
+            name="title"
+            value={title}
+            onChange={handleChange}
+            placeholder="Blog Title"
+            className="w-full p-3 border rounded-lg"
+          />
 
-          {/* Title */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-1 block">
-              Blog Title
-            </label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 text-gray-400" size={18} />
-              <input
-                name="title"
-                value={title}
-                onChange={handleChange}
-                className="w-full pl-10 pr-4 py-2 border rounded-lg"
-                placeholder="Enter blog title"
-              />
+          {/* IMAGE */}
+          {!featureImage ? (
+            <div className="border-2 border-dashed p-6 rounded-lg text-center relative">
+              {imageUploading ? (
+                <Loader2 className="animate-spin mx-auto" />
+              ) : (
+                <>
+                  <ImageIcon className="mx-auto mb-2 text-gray-400" size={40} />
+                  <p>Upload feature image</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                  />
+                </>
+              )}
             </div>
-          </div>
+          ) : (
+            <div className="relative">
+              <img src={featureImage} className="rounded-lg" />
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
 
-          {/* Feature Image */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Feature Image
-            </label>
+          {/* CONTENT */}
+          <EditorBlog
+            value={content}
+            onChange={(val) =>
+              setFormData({ ...formData, content: val })
+            }
+          />
 
-            {!featureImage ? (
-              <div className="border-2 border-dashed rounded-lg p-6 text-center relative">
-                {imageUploading ? (
-                  <div className="flex flex-col items-center text-blue-600">
-                    <Loader2 className="animate-spin mb-2" size={32} />
-                    Uploading...
-                  </div>
-                ) : (
-                  <>
-                    <ImageIcon className="mx-auto mb-2 text-gray-400" size={40} />
-                    <p className="text-sm text-gray-500">Click to upload image</p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
-                    />
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="relative">
-                <img
-                  src={featureImage}
-                  alt="Preview"
-                  className="w-full h-64 object-cover rounded-lg"
-                />
-                <button
-                  type="button"
-                  onClick={handleRemoveImage}
-                  className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Content */}
-          <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Blog Content
-            </label>
-            <EditorBlog 
-                value={content}
-                onChange={(val) =>
-                  setFormData({ ...formData, content: val })
-                }
-              />
- 
-          </div>
-
-          {/* Category & Tags */}
+          {/* CATEGORY & TAGS */}
           <div className="grid md:grid-cols-2 gap-4">
             <input
               name="category"
               value={category}
               onChange={handleChange}
-              placeholder="Category"
-              className="p-2 border rounded-lg"
+              placeholder="Categories (comma separated)"
+              className="p-2 border rounded"
             />
             <input
               name="tags"
               value={tags}
               onChange={handleChange}
               placeholder="Tags (comma separated)"
-              className="p-2 border rounded-lg"
+              className="p-2 border rounded"
             />
           </div>
 
           {/* SEO */}
-          <div className="bg-gray-50 p-4 rounded-lg border space-y-3">
-            <h3 className="font-semibold">SEO Settings</h3>
-            <input
-              name="metaTitle"
-              value={metaTitle}
-              onChange={handleChange}
-              placeholder="Meta Title"
-              className="w-full p-2 border rounded-lg"
-            />
-            <textarea
-              name="metaDescription"
-              value={metaDescription}
-              onChange={handleChange}
-              placeholder="Meta Description"
-              rows={2}
-              className="w-full p-2 border rounded-lg"
-            />
-          </div>
+          <input
+            name="metaTitle"
+            value={metaTitle}
+            onChange={handleChange}
+            placeholder="Meta Title"
+            className="p-2 border rounded w-full"
+          />
+          <textarea
+            name="metaDescription"
+            value={metaDescription}
+            onChange={handleChange}
+            placeholder="Meta Description"
+            className="p-2 border rounded w-full"
+          />
 
-          {/* Submit */}
-          <button
-            disabled={loading || imageUploading}
-            className="w-full flex justify-center items-center gap-2 py-3 rounded-lg text-white bg-gray-900 disabled:bg-gray-400"
+          {/* FAQ */}
+          <div className="space-y-4">
+            <h3 className="font-semibold">FAQs</h3>
+            {faq.map((f, i) => (
+              <div key={i} className="space-y-2">
+                <input
+                  placeholder="Question"
+                  value={f.question}
+                  onChange={(e) =>
+                    handleFaqChange(i, "question", e.target.value)
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                <textarea
+                  placeholder="Answer"
+                  value={f.answer}
+                  onChange={(e) =>
+                    handleFaqChange(i, "answer", e.target.value)
+                  }
+                  className="p-2 border rounded w-full"
+                />
+                {faq.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeFaq(i)}
+                    className="text-red-500 text-sm"
+                  >
+                    Remove FAQ
+                  </button>
+                )}
+              </div>
+            ))}
+            <button type="button" onClick={addFaq} className="text-blue-600">
+              + Add FAQ
+            </button>
+          </div>
+            {/* INTERNAL LINKS */}
+<div className="border rounded-lg p-4 space-y-4">
+  <h3 className="font-semibold text-gray-800">Internal Links</h3>
+
+  {internalLinks.map((link, index) => (
+    <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-3 relative">
+      <input
+        type="text"
+        placeholder="Link Title (e.g. Best AI Tools)"
+        value={link.title}
+        onChange={(e) =>
+          handleLinkChange("internalLinks", index, "title", e.target.value)
+        }
+        className="p-2 border rounded-lg"
+      />
+
+      <input
+        type="text"
+        placeholder="/blogs/best-ai-tools"
+        value={link.url}
+        onChange={(e) =>
+          handleLinkChange("internalLinks", index, "url", e.target.value)
+        }
+        className="p-2 border rounded-lg"
+      />
+
+      {internalLinks.length > 1 && (
+        <button
+          type="button"
+          onClick={() => removeLink("internalLinks", index)}
+          className="text-sm text-red-500 col-span-full text-left"
+        >
+          Remove internal link
+        </button>
+      )}
+    </div>
+  ))}
+
+  <button
+    type="button"
+    onClick={() => addLink("internalLinks")}
+    className="text-blue-600 text-sm"
+  >
+    + Add Internal Link
+  </button>
+</div>
+
+          {/* SUBMIT */}
+        <div className="flex items-center justify-center gap-5">  
+          <button type="button"
+            disabled={loading}
+            className="w-28 bg-gray-300 text-black py-3 rounded-lg border border-dashed cursor-pointer"
+            onClick={()=> handleSubmit("draft")}
           >
-            {loading ? <Loader2 className="animate-spin" /> : <Save size={18} />}
+            {loading ? "Drafting..." : "+ Draft Blog"}
+          </button>
+          <button type="button"
+            disabled={loading}
+            className="w-72 bg-gray-900 text-white py-3 rounded-lg cursor-pointer"
+            onClick={()=>handleSubmit("published")}
+          >
             {loading ? "Publishing..." : "Publish Blog"}
           </button>
-
+        </div>
         </form>
       </div>
     </div>
