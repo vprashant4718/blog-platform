@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FileText, Image as ImageIcon, Save, X, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import API from "../utils/api";
-import Editor from "../Components/Editor_Blog";
+import EditorBlog from "../Components/Editor_Blog";
 import { uploadToCloudinary } from "../Components/UploadToCloudinary";
 import { useNavigate } from "react-router-dom";
 
@@ -178,12 +178,13 @@ const CreateBlog = () => {
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               Blog Content
             </label>
-            <Editor
-              value={content}
-              onChange={(val) =>
-                setFormData({ ...formData, content: val })
-              }
-            />
+            <EditorBlog 
+                value={content}
+                onChange={(val) =>
+                  setFormData({ ...formData, content: val })
+                }
+              />
+ 
           </div>
 
           {/* Category & Tags */}

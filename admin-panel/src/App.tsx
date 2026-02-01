@@ -25,7 +25,7 @@ const App=()=> {
     </Routes>
     {/* <ToastContainer theme='dark' position="top-right" autoClose={3000} draggable className='mt-16'/> */}
      {/* <Footer />  */}
-     <ToastContainer position="top-right" className={'mt-20'} autoClose={3000} />
+     <ToastContainer position="top-right" theme='dark' className={'mt-20'} autoClose={3000} />
     </BrowserRouter>
   )
 }
