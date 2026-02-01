@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LayoutDashboard, PenSquare, LogOut, BookOpen, LogIn, Magnet } from "lucide-react";
+import { LayoutDashboard, PenSquare, LogOut, BookOpen, LogIn, Magnet, User2 } from "lucide-react";
 import API from "../utils/api";
 import { clearUser } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,6 +50,14 @@ const Navbar = () => {
             <PenSquare size={16} />
             Create Blog
           </Link ></>}
+
+          {user?.role === "superAdmin" &&  <Link
+            to="/dashboard/usermanagement"
+            className="flex items-center gap-1 hover:text-gray-900 transition"
+          >
+            <User2 size={16} />
+            User Management
+          </Link> }
 
           {/* Logout */}
           {user ?<button 

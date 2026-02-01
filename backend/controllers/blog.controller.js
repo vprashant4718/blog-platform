@@ -171,4 +171,43 @@ export const incrementBlogView = async (req, res) => {
 };
 
 
-// Add logic for  updateBlog, deleteBlog here...
+//logic for  updateBlog, deleteBlog here...
+//UPDATE BLOG
+export const updateBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+
+    if (!updatedBlog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    res.status(200).json(updatedBlog);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//DELETE BLOG 
+export const deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blog = await Blog.findByIdAndDelete(id);
+
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    res.status(200).json({ message: "Blog deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

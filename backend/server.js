@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import blogRouter from './routes/blog.route.js';
 import authRouter from './routes/auth.route.js'
+import userRouter from './routes/user.route.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 dotenv.config();
@@ -26,6 +27,7 @@ mongoose.connect(MONGO).then(()=>{
 
 app.use('/api/auth', authRouter);
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', userRouter);
 
 
 app.listen(PORT,()=>{

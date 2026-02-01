@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBlog, getBlogBySlug, getAllBlogs, getAllBlogsAdmin, incrementBlogView } from '../controllers/blog.controller.js';
+import { createBlog, getBlogBySlug, getAllBlogs, getAllBlogsAdmin, incrementBlogView, updateBlog, deleteBlog } from '../controllers/blog.controller.js';
 import { verifyToken, checkRole } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
@@ -16,5 +16,9 @@ router.get('/:slug', getBlogBySlug);
 // increase view of the blog  when new view occurs 
 router.patch("/view/:slug", incrementBlogView);
 
+/* UPDATE */
+router.put( "/update/:id", verifyToken,  checkRole(["superAdmin", "author"]),  updateBlog );
 
+/* DELETE */
+router.delete( "/delete/:id",  verifyToken,  checkRole(["superAdmin"]),  deleteBlog);
 export default router;

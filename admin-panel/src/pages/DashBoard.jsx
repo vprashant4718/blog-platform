@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { FileText, Users, Eye, Clock } from "lucide-react";
 import API from "../utils/api";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.auth.user);
@@ -102,6 +103,27 @@ useEffect(() => {
             </li>
           </ul>
         </div>
+
+        {/* All Blogs CTA */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="flex items-start text-lg font-semibold text-gray-900">
+                All Blogs
+              </h2>
+              <p className="text-sm text-gray-500">
+                View and manage all blog posts
+              </p>
+            </div>
+
+            <Link to="/dashboard/allBlogs"
+              className="px-4 py-2 text-sm rounded-lg bg-gray-900 text-white hover:bg-gray-800"
+            >
+              View Blogs
+            </Link>
+          </div>
+        </div>
+
 
       </div>
     </div>
