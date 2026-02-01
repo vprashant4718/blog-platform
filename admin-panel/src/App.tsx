@@ -8,6 +8,7 @@ import Dashboard from './pages/DashBoard';
 import { ToastContainer } from 'react-toastify';
 import AllBlogs from './pages/AllBlogs';
 import UserManagement from './pages/UserManagement';
+import UpdateBlog from './Components/UpdateBlog';
 
 const App=()=> {
 
@@ -23,6 +24,7 @@ const App=()=> {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/blogs/create" element={<CreateBlog />} />
       <Route path="/dashboard/allblogs" element={<AllBlogs />} />
+      <Route path="/dashboard/Update/:id" element={<UpdateBlog />} />
       <Route path="/dashboard/usermanagement" element={<UserManagement />} />
     </Route>
     

@@ -139,12 +139,26 @@ export const getAllBlogsAdmin = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+// GET /api/blogs/admin/getAllBlogsById
+export const getAllBlogsAdminById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const blogs = await Blog.find({ _id: id })
+      .populate("author", "name email")
+      .sort({ createdAt: -1 });
+
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 
 export const getBlogBySlug = async (req, res) => {
   try {
     // Find blog by 'slug' field, not '_id'
-    const blog = await Blog.findOne({ slug: req.params.slug }).populate('author', 'name');
+    const blog = await Blog.findOne({ slug: req.params.slug, status: "published" }).populate('author', 'name');
     if (!blog) return res.status(404).json({ message: 'Blog not found' });
     res.json(blog);
   } catch (err) {

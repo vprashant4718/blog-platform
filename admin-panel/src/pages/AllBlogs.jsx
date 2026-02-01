@@ -60,7 +60,7 @@ const AllBlogs = () => {
 
   /*  Update EDIT */
   const handleEdit = (id) => {
-    navigate(`/dashboard/edit/${id}`);
+    navigate(`/dashboard/Update/${id}`);
   };
 
   return (
@@ -101,11 +101,11 @@ const AllBlogs = () => {
             <tbody>
               {blogs.map((blog) => (
                 <tr key={blog._id} className="border-t hover:bg-gray-50">
-                  <td className="p-3 font-medium">
+                  <td className="p-3 font-medium text-start">
                     {blog.title}
                   </td>
 
-                  <td className="p-3 capitalize">
+                  <td className="p-3 capitalize text-start">
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium
                         ${
@@ -118,14 +118,14 @@ const AllBlogs = () => {
                     </span>
                   </td>
 
-                  <td className="p-3">{blog.views || 0}</td>
+                  <td className="p-3 text-center">{blog.views || 0}</td>
 
-                  <td className="p-3">
+                  <td className="p-3 text-start">
                     {blog.author?.name || "—"}
                   </td>
 
                   {/* Actions */}
-                  <td className="p-3">
+                  <td className="p-3 text-start">
                     <div className="flex justify-center gap-4">
                       <button
                         onClick={() => handlePreview(blog.slug)}
