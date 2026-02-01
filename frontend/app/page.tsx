@@ -30,17 +30,42 @@ export default async function Home() {
     <main className="bg-gray-50 min-h-screen">
       
       {/* Hero Section */}
-      <section className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-6 py-16 text-center">
-          <h1 className="text-4xl font-bold text-gray-900">
-            Latest Tech Blogs
-          </h1>
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-            Explore in-depth articles on full stack development, modern web
-            technologies, career guides, and best practices for developers.
-          </p>
-        </div>
-      </section>
+     <div className="bg-gradient-to-b from-gray-50 to-white border-b">
+  <div className="max-w-7xl mx-auto px-6 py-20 text-center">
+    
+    {/* Title */}
+    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+      Real-World Blogs
+    </h1>
+
+    {/* Subtitle */}
+    <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+      Discover Real Blogs Real Information, Modern Blogs, Best Blog Website, career growth — written from
+      real experience, not theory.
+    </p>
+
+    {/* Highlights */}
+    <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-gray-700">
+      <div className="flex items-center gap-2">
+        <span className="text-xl">🧑‍💻</span>
+        All Type of Blogs
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-xl">⚙️</span>
+        Real News
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-xl">📈</span>
+        Career & Growth
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-xl">🧠</span>
+        Clean Architecture
+      </div>
+    </div>
+  </div>
+</div>
+
 
       {/* Blog Grid */}
       <section className="max-w-7xl mx-auto px-6 py-12">

@@ -136,7 +136,7 @@ const AllBlogs = () => {
                       </button>
 
                       {(user.role === "superAdmin" ||
-                        user.role === "author") && (
+                        user.role === "author" || user.role === "editor") && (
                         <button
                           onClick={() => handleEdit(blog._id)}
                           title="Edit"

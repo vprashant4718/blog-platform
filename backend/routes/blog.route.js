@@ -10,15 +10,15 @@ router.post('/create', verifyToken, checkRole(['editor', 'author', 'superAdmin']
 router.get('/getAllBlogs', getAllBlogs);
 
 // admin (protected)
-router.get( "/admin/getAllBlogs", verifyToken, checkRole(["editor", "author", "superAdmin"]), getAllBlogsAdmin );
-router.get( "/admin/getAllBlogs/:id", verifyToken, checkRole(["editor", "author", "superAdmin"]), getAllBlogsAdminById );
+router.get( "/admin/getAllBlogs", verifyToken, checkRole(["viewer", "editor", "author", "superAdmin"]), getAllBlogsAdmin );
+router.get( "/admin/getAllBlogs/:id", verifyToken, checkRole(["viewer", "editor", "author", "superAdmin"]), getAllBlogsAdminById );
 
 router.get('/:slug', getBlogBySlug);
 // increase view of the blog  when new view occurs 
 router.patch("/view/:slug", incrementBlogView);
 
 /* UPDATE */
-router.put( "/update/:id", verifyToken,  checkRole(["superAdmin", "author"]),  updateBlog );
+router.put( "/update/:id", verifyToken,  checkRole(["superAdmin", "author", "editor"]),  updateBlog );
 
 /* DELETE */
 router.delete( "/delete/:id",  verifyToken,  checkRole(["superAdmin"]),  deleteBlog);

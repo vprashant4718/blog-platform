@@ -16,8 +16,15 @@ const Dashboard = () => {
 const getBlogs = async () => {
   try {
     const res = await API.get("/blogs/admin/getAllBlogs");
-
-    const data = res.data; 
+    
+    let filterData = res.data;
+    
+    if(user.role === "author"){
+      filterData = res.data.filter(
+        (blog) => blog.author?._id === user._id
+      );
+    }
+    const data = filterData; 
     console.log("Fetched blogs:", data);
 
       const totalViews = data.reduce(
