@@ -15,7 +15,7 @@ export default function BlogCard({ blog }) {
                   />
                 )}
 
-                <div className="p-5 flex flex-col h-full">
+                <div className="p-5 flex flex-col">
                   
                   {/* Category */}
                   {blog.categories?.length > 0 && (
@@ -34,6 +34,7 @@ export default function BlogCard({ blog }) {
                     </Link>
                   </h2>
 
+                <div className='min-h-40'>
                   {/* Description */}
                   <p className="mt-3 text-gray-600 text-sm line-clamp-3">
                     {blog.metaDescription}
@@ -54,24 +55,18 @@ export default function BlogCard({ blog }) {
                       ))}
                     </div>
                   )}
+                </div>
 
                   {/* Footer */}
-                  <div className="mt-auto pt-5 flex items-center justify-between text-sm text-gray-500">
+                  <div className="pt-5 mt-2 flex flex-col  items-start justify-end text-sm text-gray-500">
                     <span>
-                      {blog.author?.name || "Admin"}
+                     by {blog.author?.name || "Admin"}
                     </span>
                     <span>
                       {new Date(blog.createdAt).toDateString()}
                     </span>
                   </div>
 
-                  {/* CTA */}
-                  <Link
-                    href={`/blog/${blog.slug}`}
-                    className="mt-4 inline-block text-sm font-medium text-blue-600 hover:underline"
-                  >
-                    Read full article →
-                  </Link>
                 </div>
               </article>
   );

@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import ViewTracker from "./ViewTracker";
 import Link from "next/link";
+import RelatedBlogs from "../_components/RelatedBlogs";
+import FAQ from "../_components/FAQ";
 
 // Fetch single blog
 async function getBlog(slug) {
@@ -83,13 +85,10 @@ export default async function BlogPage({ params }) {
         className="prose prose-lg max-w-none"
         dangerouslySetInnerHTML={{ __html: blog.content }}
       />
-
-      <div className="flex flex-col items-start justify-center gap-3 mt-16">
-        <h5 className="text-2xl font-extrabold ">See Related Blogs ⬇️</h5>
-        <div className="flex flex-col gap-1">
-          <h4 className=" underline text-lg text-blue-800">{blog.internalLinks.map((link) => (<Link key={link._id} href={link.url}>{link.title}</Link>))}</h4>
-        </div>
-      </div>
+      
+      <FAQ faqs={blog.faq} />
+      <RelatedBlogs blog={blog}  />
+      
     </article>
   );
 }
