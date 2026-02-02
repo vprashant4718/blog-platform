@@ -55,7 +55,7 @@ const AllBlogs = () => {
 
   //PREVIEW  Blog
   const handlePreview = (slug) => {
-    window.open(`http://localhost:3000/blog/${slug}`, "_blank");
+    window.open(import.meta.env.VITE_PRIVIEW_URL+slug, "_blank");
   };
 
   /*  Update EDIT */
@@ -99,10 +99,10 @@ const AllBlogs = () => {
             </thead>
 
             <tbody>
-              {blogs.map((blog) => (
+              {blogs.map((blog, index) => (
                 <tr key={blog._id} className="border-t hover:bg-gray-50">
                   <td className="p-3 font-medium text-start">
-                    {blog.title}
+                   {index + 1}. {blog.title}
                   </td>
 
                   <td className="p-3 capitalize text-start">
@@ -121,7 +121,7 @@ const AllBlogs = () => {
                   <td className="p-3 text-center">{blog.views || 0}</td>
 
                   <td className="p-3 text-start">
-                    {blog.author?.name || "—"}
+                    {blog.author?.name || "—"}  {blog.author?._id === user?._id &&<span className="bg-green-600 text-xs rounded-sm  px-2">{blog.author?._id === user?._id ? "By Me" : ""}</span>} 
                   </td>
 
                   {/* Actions */}
@@ -146,7 +146,7 @@ const AllBlogs = () => {
                         </button>
                       )}
 
-                      {user.role === "superAdmin" && (
+                      {user.role === "superAdmin"  && (
                         <button
                           onClick={() => handleDelete(blog._id)}
                           title="Delete"

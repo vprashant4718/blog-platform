@@ -12,32 +12,34 @@ const Dashboard = () => {
   drafts: 0,
   views: 0,
 });
+const [filterData, setFilterData] = useState([]);
 
 const getBlogs = async () => {
   try {
     const res = await API.get("/blogs/admin/getAllBlogs");
     
-    let filterData = res.data;
-    
-    if(user.role === "author"){
-      filterData = res.data.filter(
-        (blog) => blog.author?._id === user._id
-      );
-    }
-    const data = filterData; 
-    console.log("Fetched blogs:", data);
+     let data = res.data; 
+     
 
-      const totalViews = data.reduce(
+     if(user.role === "author"){
+       data = data.filter(
+         (blog) => blog.author?._id === user._id
+        );
+      }
+      setFilterData(data);
+    const totalViews = data.reduce(
       (sum, blog) => sum + (blog.views || 0),
       0
     );
-    setBlogsData({
+    
+       setBlogsData({
       total: data.length,
       published: data.filter((blog) => blog.status === "published").length,
       drafts: data.filter((blog) => blog.status === "draft").length,
       views: totalViews
     });
 
+   
   } catch (error) {
     console.error("Error fetching blogs:", error);
   }
@@ -97,16 +99,15 @@ useEffect(() => {
 
           <ul className="space-y-3 text-sm text-gray-700">
             <li className="flex justify-between">
-              <span>New blog created: “How AI Is Changing Blogging”</span>
-              <span className="text-gray-400">2 hours ago</span>
+              <span>New blog created: {filterData[0]?.title || "No blogs yet"}</span>
             </li>
             <li className="flex justify-between">
-              <span>Blog published: “SEO Tips for 2026”</span>
-              <span className="text-gray-400">Yesterday</span>
+              {/* <span></span> */}
+              {/* <span className="text-gray-400"> </span> */}
             </li>
             <li className="flex justify-between">
-              <span>Draft updated: “Next.js Performance Guide”</span>
-              <span className="text-gray-400">2 days ago</span>
+              {/* <span>Draft updated: “Next.js Performance Guide”</span> */}
+              <span className="text-gray-400">{filterData[0]?.updatedAt ? new Date(filterData[0].updatedAt).toLocaleDateString() : "No date available"}</span>
             </li>
           </ul>
         </div>
