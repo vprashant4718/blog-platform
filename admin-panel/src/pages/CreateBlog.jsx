@@ -42,7 +42,7 @@ const CreateBlog = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  /* ================= IMAGE UPLOAD ================= */
+  /*   IMAGE UPLOAD   */
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -65,7 +65,7 @@ const CreateBlog = () => {
     setFormData({ ...formData, featureImage: "" });
   };
 
-  /* ================= FAQ ================= */
+  /*   FAQ   */
   const handleFaqChange = (i, field, value) => {
     const updated = [...faq];
     updated[i][field] = value;
@@ -84,7 +84,7 @@ const CreateBlog = () => {
       faq: faq.filter((_, index) => index !== i),
     });
 
-  /* ================= LINKS ================= */
+  /*   LINKS   */
   const handleLinkChange = (type, i, field, value) => {
     const updated = [...formData[type]];
     updated[i][field] = value;
@@ -103,10 +103,10 @@ const CreateBlog = () => {
       [type]: formData[type].filter((_, index) => index !== i),
     });
 
-  /* ================= SUBMIT ================= */
+  /*   SUBMIT   */
   const handleSubmit = async (status) => {
     // e.preventDefault();
-    console.log(status);
+    // console.log(status);
     if (!title.trim()) return toast.warning("Title is required");
     if (!content || content.length < 30)
       return toast.warning("Content too short");

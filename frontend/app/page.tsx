@@ -2,7 +2,7 @@ import Link from "next/link";
 import './globals.css';
 import BlogCard from "./_components/BlogCard";
 
-// Server-side fetch (correct)
+
 async function getBlogs() {
   try { 
   const res = await fetch(
@@ -24,7 +24,7 @@ async function getBlogs() {
 
 export default async function Home() {
   const blogs = await getBlogs();
-  console.log("blogs:", blogs);
+  // console.log("blogs:", blogs);
 
   return (
     <main className="bg-gray-50 min-h-screen">

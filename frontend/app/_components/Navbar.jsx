@@ -4,7 +4,7 @@ import '../globals.css';
 const Navbar = () => {
 
   return (
-    <nav className="bg-white border-b flex justify-center items-center border-gray-200 px-6 py-3">
+    <nav className="bg-white border-b flex justify-center items-center border-gray-200 px-6 py-3 fixed w-full top-0 z-50">
         {/* Logo / Brand */}
         <Link href={'/'} className="flex items-center gap-2 text-gray-900 font-semibold text-lg">
           <BookOpen size={20} />

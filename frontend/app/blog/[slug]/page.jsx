@@ -42,7 +42,7 @@ export default async function BlogPage({ params }) {
 
   const blog = await getBlog(slug);
   if (!blog) return notFound();
-  console.log("Blog data:", blog);
+  // console.log("Blog data:", blog);
   const seoSchema = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",

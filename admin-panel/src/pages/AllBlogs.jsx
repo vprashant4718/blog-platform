@@ -12,7 +12,7 @@ const AllBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  /* ================= FETCH BLOGS ================= */
+  /*   FETCH BLOGS   */
   const fetchBlogs = async () => {
     try {
       setLoading(true);
@@ -39,7 +39,7 @@ const AllBlogs = () => {
     fetchBlogs();
   }, []);
 
-  /* ================= DELETE BLOG ================= */
+  /*   DELETE BLOG   */
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this blog?")) return;
 

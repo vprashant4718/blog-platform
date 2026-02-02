@@ -16,7 +16,7 @@ const Login = () => {
 
     try {
       const {data} = await API.post("/auth/login", { email, password });
-      console.log(data)
+      // console.log(data)
       dispatch(loginUser({
       user: data.user,
       role: data.user.role

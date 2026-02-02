@@ -41,7 +41,7 @@ const UpdateBlog = () => {
     externalLinks,
   } = formData;
 
-  /* ================= FETCH BLOG ================= */
+  /*   FETCH BLOG   */
   useEffect(() => {
     const fetchBlog = async () => {
       try {
@@ -76,11 +76,11 @@ const UpdateBlog = () => {
     fetchBlog();
   }, [id, navigate]);
 
-  /* ================= COMMON HANDLERS ================= */
+  /*   COMMON HANDLERS   */
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  /* ================= IMAGE ================= */
+  /*   IMAGE   */
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -102,7 +102,7 @@ const UpdateBlog = () => {
   const handleRemoveImage = () =>
     setFormData({ ...formData, featureImage: "" });
 
-  /* ================= FAQ ================= */
+  /*   FAQ   */
   const handleFaqChange = (i, field, value) => {
     const updated = [...faq];
     updated[i][field] = value;
@@ -121,7 +121,7 @@ const UpdateBlog = () => {
       faq: faq.filter((_, idx) => idx !== i),
     });
 
-  /* ================= LINKS ================= */
+  /*   LINKS   */
   const handleLinkChange = (type, i, field, value) => {
     const updated = [...formData[type]];
     updated[i][field] = value;
@@ -140,7 +140,7 @@ const UpdateBlog = () => {
       [type]: formData[type].filter((_, idx) => idx !== i),
     });
 
-  /* ================= SUBMIT ================= */
+  /*   SUBMIT   */
   const handleSubmit = async (status) => {
     if (!title.trim()) return toast.warning("Title is required");
     if (!content || content.length < 30)
@@ -177,7 +177,7 @@ const UpdateBlog = () => {
     }
   };
 
-  /* ================= LOADING ================= */
+  /*   LOADING   */
   if (initialLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -186,13 +186,13 @@ const UpdateBlog = () => {
     );
   }
 
-  /* ================= UI ================= */
+  /*   UI   */
  return (
   <div className="min-h-screen p-6 bg-gray-50">
     <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
       <h1 className="text-2xl font-bold mb-6">Edit Blog</h1>
 
-      {/* ================= TITLE ================= */}
+      {/*   TITLE   */}
       <input
         name="title"
         value={title}
@@ -201,7 +201,7 @@ const UpdateBlog = () => {
         className="w-full p-3 border rounded-lg mb-4"
       />
 
-      {/* ================= IMAGE ================= */}
+      {/*   IMAGE   */}
       {!featureImage ? (
         <div className="border-2 border-dashed p-6 rounded-lg text-center relative mb-6">
           {imageUploading ? (
@@ -232,7 +232,7 @@ const UpdateBlog = () => {
         </div>
       )}
 
-      {/* ================= CONTENT ================= */}
+      {/*   CONTENT   */}
       <EditorBlog
         value={content}
         onChange={(val) =>
@@ -240,7 +240,7 @@ const UpdateBlog = () => {
         }
       />
 
-      {/* ================= CATEGORY & TAGS ================= */}
+      {/*   CATEGORY & TAGS   */}
       <div className="grid md:grid-cols-2 gap-4 mt-6">
         <input
           name="category"
@@ -258,7 +258,7 @@ const UpdateBlog = () => {
         />
       </div>
 
-      {/* ================= SEO ================= */}
+      {/*   SEO   */}
       <div className="mt-6 space-y-3">
         <input
           name="metaTitle"
@@ -277,7 +277,7 @@ const UpdateBlog = () => {
         />
       </div>
 
-      {/* ================= FAQ ================= */}
+      {/*   FAQ   */}
       <div className="mt-8 space-y-4">
         <h3 className="font-semibold text-lg">FAQs</h3>
 
@@ -320,7 +320,7 @@ const UpdateBlog = () => {
         </button>
       </div>
 
-      {/* ================= INTERNAL LINKS ================= */}
+      {/*   INTERNAL LINKS   */}
       <div className="mt-8 space-y-4">
         <h3 className="font-semibold text-lg">Internal Links</h3>
 
@@ -363,7 +363,7 @@ const UpdateBlog = () => {
         </button>
       </div>
 
-      {/* ================= EXTERNAL LINKS ================= */}
+      {/*   EXTERNAL LINKS   */}
       <div className="mt-8 space-y-4">
         <h3 className="font-semibold text-lg">External Links</h3>
 
@@ -406,7 +406,7 @@ const UpdateBlog = () => {
         </button>
       </div>
 
-      {/* ================= ACTIONS ================= */}
+      {/*   ACTIONS   */}
       <div className="flex justify-center gap-5 mt-10">
         <button
           disabled={loading}
