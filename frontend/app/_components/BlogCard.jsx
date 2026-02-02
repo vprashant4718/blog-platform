@@ -8,11 +8,16 @@ export default function BlogCard({ blog }) {
               >
                 {/* Feature Image */}
                 {blog.featureImage && (
+                  <Link
+                      href={`/blog/${blog.slug}`}
+                      className="hover:text-blue-600 transition underline"
+                    >
                   <img
                     src={blog?.featureImage}
                     alt={blog.title}
                     className="w-full h-48 object-cover"
                   />
+                  </Link>
                 )}
 
                 <div className="p-5 flex flex-col">
@@ -28,7 +33,7 @@ export default function BlogCard({ blog }) {
                   <h2 className="mt-2 text-xl font-semibold text-gray-900 leading-snug">
                     <Link
                       href={`/blog/${blog.slug}`}
-                      className="hover:text-blue-600 transition"
+                      className="hover:text-blue-600 transition underline"
                     >
                       {blog.title}
                     </Link>

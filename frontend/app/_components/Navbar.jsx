@@ -15,7 +15,7 @@ const Navbar = () => {
       <div className="flex items-center justify-center gap-10 max-w-7xl mx-auto">
 
         {/* Navigation Links */}
-        <div className="flex items-center pr-10 gap-20  text-sm font-medium text-gray-700">
+        <div className="flex items-center pl-10 md:pr-10 gap-5 md:gap-20 text-sm font-medium text-gray-700">
 
           <Link
             href="/"

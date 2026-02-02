@@ -56,7 +56,7 @@ export default async function BlogPage({ params }) {
   };
 
   return (
-    <article className="max-w-3xl mx-auto px-6 py-12">
+    <article className="max-w-3xl mx-auto px-6 py-12 pt-24">
       {/* View counter (client-only) */}
       <ViewTracker slug={blog.slug} />
 

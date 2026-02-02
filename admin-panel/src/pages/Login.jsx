@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, LogIn } from "lucide-react";
+import { Mail, Lock, LogIn, Loader2 } from "lucide-react";
 import API from "../utils/api";
 import { loginUser } from "../redux/slices/authSlice";
 import { useDispatch } from "react-redux";
@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
@@ -15,15 +16,18 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       const {data} = await API.post("/auth/login", { email, password });
       // console.log(data)
       dispatch(loginUser({
       user: data.user,
       role: data.user.role
     }));
+      setLoading(false);
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
+      setLoading(false);
     }
   };
 
@@ -86,8 +90,8 @@ const Login = () => {
             type="submit"
             className="w-full flex items-center justify-center gap-2 rounded-lg bg-gray-900 py-2.5 text-sm font-medium text-white hover:bg-gray-800 transition"
           >
-            <LogIn size={18} />
-            Login
+            {loading ? <Loader2 className="animate-spin" size={18} /> : <LogIn size={18} />}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
